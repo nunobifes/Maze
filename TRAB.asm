@@ -342,7 +342,7 @@ menu1:
                  mov		dl, Car
                  int		21H
 
-                 goto_xy	POSxb,POSyb	; Vai para posi��o do cursor
+                 goto_xy	POSx,POSy	; Vai para posi��o do cursor
                  IMPRIMEb:
                      mov		ah, 02h
                      mov		dl, 185	; Coloca AVATAR
