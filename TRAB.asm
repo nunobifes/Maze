@@ -490,10 +490,9 @@ menu1:
 
 
                          ganhoub:
-                             mov ax, 0003H
-                             int 10H
-                             mov delaytime, 100
-                             mov dx, 0000H
+
+                             mov delaytime, 100 ; pausa entre movimentos do avatar
+
                              call clear_screen  ; limpa ecrã
                              lea dx, ganhou_txt ; lê ficheiro de texto
                              call display_fich  ; mostra ficheiro de texto
@@ -510,10 +509,8 @@ menu1:
 
 
                           perdeu:
-                             mov ax, 0003H
-                             int 10H
-                             mov delaytime, 100
-                             mov dx, 0000H
+
+                             mov delaytime, 100 ; pausa entre movimentos do avatar
                              call clear_screen  ; limpa ecrã
                              lea dx, perdeu_txt ; lê ficheiro de texto
                              call display_fich  ; mostra ficheiro
