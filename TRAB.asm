@@ -333,7 +333,7 @@ menu1:
                  goto_xy	POSx,POSy	; Vai para nova possi��o
                  mov 	ah, 08h
                  mov		bh,0		; numero da p�gina
-                 int		10h
+                 int		10htr
                  mov		Car, al 	; Guarda o Caracter que est� na posi��o do Cursor
                  mov		Cor, ah	; Guarda a cor que est� na posi��o do Cursor
 
