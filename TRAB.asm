@@ -273,7 +273,7 @@ menu1:
               mov  POSy, al
               mov  al, POSxO
               mov  POSx, al
-
+              mov  ganhouVar, 0
               goto_xy	POSx,POSy	; Vai para nova posição
 
               mov  ah, 07h ; Esperar tecla.
