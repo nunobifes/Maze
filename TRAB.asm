@@ -355,140 +355,138 @@ menu1:
 
 
                  COMP_CHAR:
-                     call delay
-                     mov al,buff[si]
-                     cmp   ganhouVar, 1
-                     je    ganhoub
-                     cmp al, '$'
-                     jne tec0
-                     cmp al, '$'
-                     je perdeu
-                     jmp CICLOb
+                     call delay ;chama o procedimento delay
+                     mov al,buff[si] ; coloca em al o caracter de buff na posição si
+                     cmp   ganhouVar, 1; compara ganhouVar com 1
+                     je    ganhoub; se for igual a 1 salta para ganhoub
+                     cmp al, '$' ; compara al com '$'
+                     jne tec0 ; se for diferente salta para tec0
+                     cmp al, '$' ; compara al com '$'
+                     je perdeu ; se for igual salta para perdeu
+                     jmp CICLOb ; salta para CICLOb
 
                      tec0:
-                       cmp al, '0'
-                       jne tec1
-                       call decY
-                       inc si
-                       jmp CICLOb
+                       cmp al, '0' ; compara al com '0'
+                       jne tec1    ; se for diferente salta para o proximo caracter
+                       call decY   ; chama o procedimento de movimento 1x
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
 
                      tec1:
-                       cmp al, '1'
-                       jne tec2
+                       cmp al, '1' ;  compara al com '1'
+                       jne tec2    ; se for diferente salta para o proximo caracter
+                       call decY   ; chama o procedimento de movimento 2x
                        call decY
-                       call decY
-                       inc si
-                       jmp CICLOb
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
 
                      tec2:
-                       cmp al, '2'
-                       jne tec3
+                       cmp al, '2' ; compara al com '2'
+                       jne tec3    ; se for diferente salta para o proximo caracter
+                       call decY   ; chama o procedimento de movimento 3x
                        call decY
                        call decY
-                       call decY
-                       inc si
-                       jmp CICLOb
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec3:
-                       cmp al, '3'
-                       jne tec4
+                       cmp al, '3' ; compara al com '3'
+                       jne tec4    ; se for diferente salta para o proximo caracter
+                       call decY   ; chama o procedimento de movimento 4x
                        call decY
                        call decY
                        call decY
-                       call decY
-                       inc si
-                       jmp CICLOb
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec4:
-                       cmp al, '4'
-                     jne tec5
-                     call incY
-                     inc si
-                     jmp CICLOb
+                       cmp al, '4' ; compara al com '4'
+                       jne tec5    ; se for diferente salta para o proximo caracter
+                       call incY   ; chama o procedimento de movimento 1x
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec5:
-                     cmp al, '5'
-                     jne tec6
-                     call incY
-                     call incY
-                     inc si
-                     jmp CICLOb
+                       cmp al, '5' ; compara al com '5'
+                       jne tec6    ; se for diferente salta para o proximo caracter
+                       call incY   ; chama o procedimento de movimento 2x
+                       call incY
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec6:
-                     cmp al, '6'
-                     jne tec7
-                     call incY
-                     call incY
-                     call incY
-                     inc si
-                     jmp CICLOb
+                       cmp al, '6' ; compara al com '6'
+                       jne tec7    ; se for diferente salta para o proximo caracter
+                       call incY   ; chama o procedimento de movimento 3x
+                       call incY
+                       call incY
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec7:
-                     cmp al, '7'
-                     jne tec8
-                     call incY
-                     call incY
-                     call incY
-                     call incY
-                     je    perdeu
-                     inc si
-                     jmp CICLOb
+                       cmp al, '7' ; compara al com '7'
+                       jne tec8    ; se for diferente salta para o proximo caracter
+                       call incY   ; chama o procedimento de movimento 4x
+                       call incY
+                       call incY
+                       call incY
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec8:
-                     cmp al, '8'
-                     jne tec9
-                     call incX
-                     inc si
-                     jmp CICLOb
+                       cmp al, '8' ; compara al com '8'
+                       jne tec9    ; se for diferente salta para o proximo caracter
+                       call incX   ; chama o procedimento de movimento 1x
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tec9:
-                     cmp al, '9'
-                     jne tecA
-                     call incX
-                     call incX
-
-                     inc si
-                     jmp CICLOb
+                       cmp al, '9' ; compara al com '9'
+                       jne tecA    ; se for diferente salta para o proximo caracter
+                       call incX   ; chama o procedimento de movimento 2x
+                       call incX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecA:
-                     cmp al, 'a'
-                     jne tecB
-                     call incX
-                     call incX
-                     call incX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'a' ; compara al com 'a'
+                       jne tecB    ; se for diferente salta para o proximo caracter
+                       call incX   ; chama o procedimento de movimento 3x
+                       call incX
+                       call incX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecB:
-                     cmp al, 'b'
-                     jne tecC
-                     call incX
-                     call incX
-                     call incX
-                     call incX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'b' ; compara al com 'b'
+                       jne tecC    ; se for diferente salta para o proximo caracter
+                       call incX   ; chama o procedimento de movimento 4x
+                       call incX
+                       call incX
+                       call incX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecC:
-                     cmp al, 'c'
-                     jne tecD
-                     call decX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'c' ; compara al com 'c'
+                       jne tecD    ; se for diferente salta para o proximo caracter
+                       call decX   ; chama o procedimento de movimento 1x
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecD:
-                     cmp al, 'd'
-                     jne tecE
-                     call decX
-                     call decX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'd' ; compara al com 'd'
+                       jne tecE    ; se for diferente salta para o proximo caracter
+                       call decX   ; chama o procedimento de movimento 2x
+                       call decX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecE:
-                     cmp al, 'e'
-                     jne tecF
-                     call decX
-                     call decX
-                     call decX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'e' ; compara al com 'e'
+                       jne tecF    ; se for diferente salta para o proximo caracter
+                       call decX   ; chama o procedimento de movimento 3x
+                       call decX
+                       call decX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
                      tecF:
-                     cmp al, 'f'
-                     jne COMP_CHAR
-                     call decX
-                     call decX
-                     call decX
-                     call decX
-                     inc si
-                     jmp CICLOb
+                       cmp al, 'f' ; compara al com 'f'
+                       jne COMP_CHAR ; se for diferente salta para o proximo caracter
+                       call decX   ; chama o procedimento de movimento 4x
+                       call decX
+                       call decX
+                       call decX
+                       inc si      ; incrementa si
+                       jmp CICLOb  ; salta para CICLOb
 
 
                          ganhoub:
@@ -496,35 +494,34 @@ menu1:
                              int 10H
                              mov delaytime, 100
                              mov dx, 0000H
-                             call clear_screen
-                             lea dx, ganhou_txt
-                             call display_fich
-                             mov  al, POSyO
+                             call clear_screen  ; limpa ecrã
+                             lea dx, ganhou_txt ; lê ficheiro de texto
+                             call display_fich  ; mostra ficheiro de texto
+                             mov  al, POSyO     ; reset da posição do cursor
                              mov  POSy, al
                              mov  al, POSxO
                              mov  POSx, al
                              mov ganhouVar, 0
-                             goto_xy	POSx,POSy	; Vai para nova possi��o
+                             goto_xy	POSx,POSy	; Vai para nova posição
 
-                             mov  ah, 07h ;WAIT FOR ANY KEY.
+                             mov  ah, 07h ; espera por tecla
                              int  21h
                              jmp saib
 
 
-                             perdeu:
-
+                          perdeu:
                              mov ax, 0003H
                              int 10H
                              mov delaytime, 100
                              mov dx, 0000H
-                             call clear_screen
-                             lea dx, perdeu_txt
-                             call display_fich
-                             mov  al, POSyO
+                             call clear_screen  ; limpa ecrã
+                             lea dx, perdeu_txt ; lê ficheiro de texto
+                             call display_fich  ; mostra ficheiro
+                             mov  al, POSyO     ; reset da posição do cursor
                              mov  POSy, al
                              mov  al, POSxO
                              mov  POSx, al
-                             goto_xy	POSx,POSy	; Vai para nova possi��o
+                             goto_xy	POSx,POSy	; Vai para nova posição
 
                              mov  ah, 07h ;WAIT FOR ANY KEY.
                              int  21h
