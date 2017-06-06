@@ -38,9 +38,9 @@ menuJogar db '##################################################################
           db '###############################################################################',13,10,'$'
 
 
-			;Imprimir ficheiro
-			Erro_Open       db      'Erro ao tentar abrir o ficheiro$'
-			Erro_Ler_Msg    db      'Erro ao tentar ler do ficheiro$'
+			    ;Imprimir ficheiro
+			    Erro_Open       db      'Erro ao tentar abrir o ficheiro$'
+			    Erro_Ler_Msg    db      'Erro ao tentar ler do ficheiro$'
 			Erro_Close      db      'Erro ao tentar fechar o ficheiro$'
 			maze         	  db      'fich/maze.txt',0
       mazeB         	db      'fich/mazeB.txt',0
@@ -60,12 +60,12 @@ POSy		db	3	; a linha pode ir de [1 .. 25]
 POSx		db	9	; POSx pode ir [1..80]
 POSya		db	3	; Posi��o anterior de y
 POSxa		db	9	; Posi��o anterior de x
-POSyn   db	3	;
-POSxn		db	9	;
-POSyO   db  3
+POSyn   db	3	; Posiçao de teste para fazer verificações
+POSxn		db	9	; Posiçao de teste para fazer verificações
+POSyO   db  3 ; Posiçao original
 POSxO   db  9
 Carn		db	32
-corn    db  7
+corn    db  7 ; asdadw
 
   ; cria maze
 
@@ -75,7 +75,7 @@ corn    db  7
 
       ; buffer
 
-      buff        db  51        ;MAX NUMBER OF CHARACTERS ALLOWED (10).
+      buff        db  51        ;MAX NUMBER OF CHARACTERS ALLOWED (50).
                   db  ?         ;NUMBER OF CHARACTERS ENTERED BY USER.
                   db  51 dup(0) ;CHARACTERS ENTERED BY USER.
 
@@ -238,7 +238,7 @@ menu1:
               cmp 	al,48h
   		        jne		BAIXO
               call  decY
-              cmp   bl,1
+              cmp   ganhouVar,1
               je    ganhou
               jmp		CICLO
 
@@ -246,7 +246,7 @@ menu1:
               cmp		al,50h
   		        jne		ESQUERDA
               call   incY
-              cmp   bl,1
+              cmp   ganhouVar,1
               je    ganhou
               jmp		CICLO
 
@@ -254,7 +254,7 @@ menu1:
   		        cmp		al,4bh
   		        jne		DIREITA
               call   decX
-              cmp   bl,1
+              cmp   ganhouVar,1
               je    ganhou
               jmp		CICLO
 
@@ -262,7 +262,7 @@ menu1:
   		        cmp		al,4dh
   		        jne		LER_SETA
               call   incX
-              cmp   bl,1
+              cmp   ganhouVar,1
               je    ganhou
               jmp		CICLO
 
@@ -342,7 +342,7 @@ menu1:
                  mov		dl, Car
                  int		21H
 
-                 goto_xy	POSx,POSy	; Vai para posi��o do cursor
+                 goto_xy	POSxb,POSyb	; Vai para posi��o do cursor
                  IMPRIMEb:
                      mov		ah, 02h
                      mov		dl, 185	; Coloca AVATAR
@@ -355,36 +355,22 @@ menu1:
                      mov 	POSya, al
 
 
-                 LER_SETAb:
+                 COMP_CHAR:
 
                      call delay
-                     ;cmp al, '$'
-                     ;je perdeu
-
                      mov al,buff[si]
                      cmp   ganhouVar, 1
                      je    ganhoub
-                     ;cmp   perdeuVar, 1
-                     ;je    perdeu
                      cmp al, '$'
                      jne tec0
                      cmp al, '$'
                      je perdeu
-
-                     jmp LER_SETAb
-
-
-
-
+                     jmp CICLOb
 
                      tec0:
                        cmp al, '0'
                        jne tec1
                        call decY
-                       cmp  ganhouVar, 1
-                       je   ganhoub
-                       cmp  perdeuVar, 1
-                       je   perdeu
                        inc si
                        jmp CICLOb
                      tec1:
@@ -395,24 +381,24 @@ menu1:
                        inc si
                        jmp CICLOb
                      tec2:
-                     cmp al, '2'
-                     jne tec3
-                     call decY
-                     call decY
-                     call decY
-                     inc si
-                     jmp CICLOb
+                       cmp al, '2'
+                       jne tec3
+                       call decY
+                       call decY
+                       call decY
+                       inc si
+                       jmp CICLOb
                      tec3:
-                     cmp al, '3'
-                     jne tec4
-                     call decY
-                     call decY
-                     call decY
-                     call decY
-                     inc si
-                     jmp CICLOb
+                       cmp al, '3'
+                       jne tec4
+                       call decY
+                       call decY
+                       call decY
+                       call decY
+                       inc si
+                       jmp CICLOb
                      tec4:
-                     cmp al, '4'
+                       cmp al, '4'
                      jne tec5
                      call incY
                      inc si
@@ -496,7 +482,7 @@ menu1:
                      jmp CICLOb
                      tecF:
                      cmp al, 'f'
-                     jne LER_SETA
+                     jne COMP_CHAR
                      call decX
                      call decX
                      call decX
@@ -538,7 +524,6 @@ menu1:
                              mov  POSy, al
                              mov  al, POSxO
                              mov  POSx, al
-                             mov perdeuVar, 0
                              goto_xy	POSx,POSy	; Vai para nova possi��o
 
                              mov  ah, 07h ;WAIT FOR ANY KEY.
@@ -898,7 +883,7 @@ decY proc
     mov		bh,0		; numero da p�gina
     int		10h
     mov		Carn, al	; Guarda o Caracter que est� na posi��o do Curso
-    cmp carn, '*'
+      cmp carn, '*'
     je return
     cmp carn, '-'
     je return
@@ -908,8 +893,6 @@ decY proc
     je return
     cmp   Carn, 'F'
     je    ganhouProc
-    cmp   buff[si], '$'
-    je perdeuProc
     mov   al, POSyn
     mov   POSy,al
     mov   al, POSya
@@ -918,10 +901,6 @@ decY proc
     ganhouProc:
     mov al,1
     mov ganhouVar, al
-    jmp return
-    perdeuProc:
-    mov al,1
-    mov perdeuVar, al
     jmp return
     return:
     ret
@@ -946,8 +925,6 @@ incY proc
     je return
     cmp   Carn, 'F'
     je    ganhouProc
-    cmp   buff[si], '$'
-    je perdeuProc
     mov   al, POSyn
     mov   POSy,al
     mov   al, POSya
@@ -956,10 +933,6 @@ incY proc
     ganhouProc:
     mov al,1
     mov ganhouVar, al
-    jmp return
-    perdeuProc:
-    mov al,1
-    mov perdeuVar, al
     jmp return
     return:
     ret
@@ -985,8 +958,6 @@ incX proc
     je return
     cmp   Carn, 'F'
     je    ganhouProc
-    cmp   buff[si], '$'
-    je perdeuProc
     mov   al, POSxn
     mov   POSx,al
     mov   al, POSxa
@@ -995,10 +966,6 @@ incX proc
     ganhouProc:
     mov al,1
     mov ganhouVar, al
-    jmp return
-    perdeuProc:
-    mov al,1
-    mov perdeuVar, al
     jmp return
     return:
     ret
@@ -1023,8 +990,6 @@ decX proc
     je return
     cmp   Carn, 'F'
     je    ganhouProc
-    cmp   buff[si], '$'
-    je perdeuProc
     mov   al, POSxn
     mov   POSx,al
     mov   al, POSxa
@@ -1034,10 +999,6 @@ decX proc
     ganhouProc:
     mov al,1
     mov ganhouVar, al
-    jmp return
-    perdeuProc:
-    mov al,1
-    mov perdeuVar, al
     jmp return
     return:
     ret

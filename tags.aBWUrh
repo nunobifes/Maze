@@ -1,0 +1,151 @@
+dseg	TRAB.asm	/^dseg   	segment para public 'data'$/;"	l
+menuJogar	TRAB.asm	/^menuJogar db '###############################################################################',13,10$/;"	d
+Erro_Open	TRAB.asm	/^			Erro_Open       db      'Erro ao tentar abrir o ficheiro$'$/;"	d
+Erro_Ler_Msg	TRAB.asm	/^			Erro_Ler_Msg    db      'Erro ao tentar ler do ficheiro$'$/;"	d
+Erro_Close	TRAB.asm	/^			Erro_Close      db      'Erro ao tentar fechar o ficheiro$'$/;"	d
+maze	TRAB.asm	/^			maze         	  db      'fich\/maze.txt',0$/;"	d
+mazeB	TRAB.asm	/^      mazeB         	db      'fich\/mazeB.txt',0$/;"	d
+menu1_txt	TRAB.asm	/^      menu1_txt       db      'fich\/menu.txt',0$/;"	d
+menu_conf	TRAB.asm	/^      menu_conf       db      'fich\/menuconf.txt',0$/;"	d
+ganhou_txt	TRAB.asm	/^      ganhou_txt      db      'fich\/ganhou.txt',0$/;"	d
+perdeu_txt	TRAB.asm	/^      perdeu_txt      db      'fich\/perdeu.txt',0$/;"	d
+top10_txt	TRAB.asm	/^      top10_txt       db      'fich\/top10.txt',0$/;"	d
+HandleFich	TRAB.asm	/^			HandleFich      dw      0$/;"	d
+car_fich	TRAB.asm	/^			car_fich        db      ?$/;"	d
+Car	TRAB.asm	/^Car		db	32	; Guarda um caracter do Ecran$/;"	d
+Cor	TRAB.asm	/^Cor		db	7	; Guarda os atributos de cor do caracter$/;"	d
+POSy	TRAB.asm	/^POSy		db	3	; a linha pode ir de [1 .. 25]$/;"	d
+POSx	TRAB.asm	/^POSx		db	9	; POSx pode ir [1..80]$/;"	d
+POSya	TRAB.asm	/^POSya		db	3	; Posi��o anterior de y$/;"	d
+POSxa	TRAB.asm	/^POSxa		db	9	; Posi��o anterior de x$/;"	d
+POSyn	TRAB.asm	/^POSyn   db	3	;$/;"	d
+POSxn	TRAB.asm	/^POSxn		db	9	;$/;"	d
+POSyO	TRAB.asm	/^POSyO   db  3$/;"	d
+POSxO	TRAB.asm	/^POSxO   db  9$/;"	d
+Carn	TRAB.asm	/^Carn		db	32$/;"	d
+corn	TRAB.asm	/^corn    db  7$/;"	d
+CPOSy	TRAB.asm	/^      CPOSy   db  5$/;"	d
+CPOSx	TRAB.asm	/^      CPOSx   db  10$/;"	d
+CCar	TRAB.asm	/^      CCar    db  32$/;"	d
+buff	TRAB.asm	/^      buff        db  51        ;MAX NUMBER OF CHARACTERS ALLOWED (10).$/;"	d
+ganhouVar	TRAB.asm	/^                  ganhouVar db 0$/;"	d
+perdeuVar	TRAB.asm	/^                  perdeuVar db 0$/;"	d
+delaytime	TRAB.asm	/^                  delaytime db 5$/;"	d
+cseg	TRAB.asm	/^cseg		segment para public 'code'$/;"	l
+goto_xy	TRAB.asm	/^    goto_xy	macro		POSx,POSy$/;"	m
+main	TRAB.asm	/^main		proc$/;"	l
+menu1	TRAB.asm	/^menu1:$/;"	l
+jogo_menu	TRAB.asm	/^  jogo_menu:$/;"	l
+jogo	TRAB.asm	/^  jogo:$/;"	l
+CICLO	TRAB.asm	/^      CICLO:$/;"	l
+IMPRIME	TRAB.asm	/^          IMPRIME:$/;"	l
+LER_SETA	TRAB.asm	/^          LER_SETA:$/;"	l
+CIMA	TRAB.asm	/^          CIMA:$/;"	l
+BAIXO	TRAB.asm	/^          BAIXO:$/;"	l
+ESQUERDA	TRAB.asm	/^          ESQUERDA:$/;"	l
+DIREITA	TRAB.asm	/^          DIREITA:$/;"	l
+ganhou	TRAB.asm	/^          ganhou:$/;"	l
+voltar_jogo	TRAB.asm	/^          voltar_jogo:$/;"	l
+jogob	TRAB.asm	/^             jogob:$/;"	l
+CICLOb	TRAB.asm	/^             CICLOb:$/;"	l
+IMPRIMEb	TRAB.asm	/^                 IMPRIMEb:$/;"	l
+LER_SETAb	TRAB.asm	/^                 LER_SETAb:$/;"	l
+tec0	TRAB.asm	/^                     tec0:$/;"	l
+tec1	TRAB.asm	/^                     tec1:$/;"	l
+tec2	TRAB.asm	/^                     tec2:$/;"	l
+tec3	TRAB.asm	/^                     tec3:$/;"	l
+tec4	TRAB.asm	/^                     tec4:$/;"	l
+tec5	TRAB.asm	/^                     tec5:$/;"	l
+tec6	TRAB.asm	/^                     tec6:$/;"	l
+tec7	TRAB.asm	/^                     tec7:$/;"	l
+tec8	TRAB.asm	/^                     tec8:$/;"	l
+tec9	TRAB.asm	/^                     tec9:$/;"	l
+tecA	TRAB.asm	/^                     tecA:$/;"	l
+tecB	TRAB.asm	/^                     tecB:$/;"	l
+tecC	TRAB.asm	/^                     tecC:$/;"	l
+tecD	TRAB.asm	/^                     tecD:$/;"	l
+tecE	TRAB.asm	/^                     tecE:$/;"	l
+tecF	TRAB.asm	/^                     tecF:$/;"	l
+ganhoub	TRAB.asm	/^                         ganhoub:$/;"	l
+perdeu	TRAB.asm	/^                             perdeu:$/;"	l
+saib	TRAB.asm	/^                             saib:$/;"	l
+top10	TRAB.asm	/^    top10:$/;"	l
+config	TRAB.asm	/^  config:$/;"	l
+labiBase	TRAB.asm	/^      labiBase:$/;"	l
+carreLabi	TRAB.asm	/^      carreLabi:$/;"	l
+criaLabi	TRAB.asm	/^      criaLabi:$/;"	l
+ediLabi	TRAB.asm	/^      ediLabi:$/;"	l
+voltar	TRAB.asm	/^      voltar:$/;"	l
+sair	TRAB.asm	/^  sair:$/;"	l
+display_menuJogar	TRAB.asm	/^display_menuJogar proc$/;"	l
+display_fich	TRAB.asm	/^display_fich  proc$/;"	l
+mov	TRAB.asm	/^mov     ah,3dh			; vamos abrir ficheiro para leitura$/;"	l
+mov	TRAB.asm	/^mov     al,0			; tipo de ficheiro$/;"	l
+int	TRAB.asm	/^int     21h			; abre para leitura$/;"	l
+jc	TRAB.asm	/^jc      erro_abrir		; pode aconter erro a abrir o ficheiro$/;"	l
+mov	TRAB.asm	/^mov     HandleFich,ax		; ax devolve o Handle para o ficheiro$/;"	l
+jmp	TRAB.asm	/^jmp     ler_ciclo		; depois de abero vamos ler o ficheiro$/;"	l
+erro_abrir	TRAB.asm	/^erro_abrir:$/;"	l
+mov	TRAB.asm	/^mov     ah,09h$/;"	l
+lea	TRAB.asm	/^lea     dx,Erro_Open$/;"	l
+int	TRAB.asm	/^int     21h$/;"	l
+jmp	TRAB.asm	/^jmp     sai$/;"	l
+ler_ciclo	TRAB.asm	/^ler_ciclo:$/;"	l
+mov	TRAB.asm	/^mov     ah,3fh			; indica que vai ser lido um ficheiro$/;"	l
+mov	TRAB.asm	/^mov     bx,HandleFich		; bx deve conter o Handle do ficheiro previamente aberto$/;"	l
+mov	TRAB.asm	/^mov     cx,1			; numero de bytes a ler$/;"	l
+lea	TRAB.asm	/^lea     dx,car_fich		; vai ler para o local de memoria apontado por dx (car_fich)$/;"	l
+int	TRAB.asm	/^int     21h				; faz efectivamente a leitura$/;"	l
+jc	TRAB.asm	/^jc	    erro_ler		; se carry é porque aconteceu um erro$/;"	l
+cmp	TRAB.asm	/^cmp	    ax,0			;EOF?	verifica se já estamos no fim do ficheiro$/;"	l
+je	TRAB.asm	/^je	    fecha_ficheiro	; se EOF fecha o ficheiro$/;"	l
+mov	TRAB.asm	/^mov     ah,02h			; coloca o caracter no ecran$/;"	l
+mov	TRAB.asm	/^mov	    dl,car_fich		; este é o caracter a enviar para o ecran$/;"	l
+int	TRAB.asm	/^int	    21h				; imprime no ecran$/;"	l
+jmp	TRAB.asm	/^jmp	    ler_ciclo		; continua a ler o ficheiro$/;"	l
+erro_ler	TRAB.asm	/^erro_ler:$/;"	l
+mov	TRAB.asm	/^mov     ah,09h$/;"	l
+lea	TRAB.asm	/^lea     dx,Erro_Ler_Msg$/;"	l
+int	TRAB.asm	/^int     21h$/;"	l
+fecha_ficheiro	TRAB.asm	/^fecha_ficheiro:					; vamos fechar o ficheiro$/;"	l
+mov	TRAB.asm	/^mov     ah,3eh$/;"	l
+mov	TRAB.asm	/^mov     bx,HandleFich$/;"	l
+int	TRAB.asm	/^int     21h$/;"	l
+jnc	TRAB.asm	/^jnc     sai$/;"	l
+sai	TRAB.asm	/^sai:$/;"	l
+clear_screen	TRAB.asm	/^    clear_screen proc$/;"	l
+LE_TECLA	TRAB.asm	/^    LE_TECLA	PROC$/;"	l
+SAI_TECLA	TRAB.asm	/^    SAI_TECLA:	RET$/;"	l
+cria_maze	TRAB.asm	/^    cria_maze proc$/;"	l
+CICLO	TRAB.asm	/^      CICLO:$/;"	l
+IMPRIME	TRAB.asm	/^        IMPRIME:$/;"	l
+ZERO	TRAB.asm	/^        ZERO:$/;"	l
+UM	TRAB.asm	/^        UM:$/;"	l
+DOIS	TRAB.asm	/^        DOIS:$/;"	l
+TRES	TRAB.asm	/^        TRES:$/;"	l
+QUATRO	TRAB.asm	/^        QUATRO:$/;"	l
+NOVE	TRAB.asm	/^        NOVE:$/;"	l
+ESTEND	TRAB.asm	/^        ESTEND:$/;"	l
+BAIXO	TRAB.asm	/^        BAIXO:$/;"	l
+ESQUERDA	TRAB.asm	/^        ESQUERDA:$/;"	l
+DIREITA	TRAB.asm	/^        DIREITA:$/;"	l
+fim	TRAB.asm	/^        fim:$/;"	l
+delay	TRAB.asm	/^delay proc$/;"	l
+jmp_delay	TRAB.asm	/^jmp_delay:$/;"	l
+decY	TRAB.asm	/^decY proc$/;"	l
+ganhouProc	TRAB.asm	/^    ganhouProc:$/;"	l
+perdeuProc	TRAB.asm	/^    perdeuProc:$/;"	l
+return	TRAB.asm	/^    return:$/;"	l
+incY	TRAB.asm	/^incY proc$/;"	l
+ganhouProc	TRAB.asm	/^    ganhouProc:$/;"	l
+perdeuProc	TRAB.asm	/^    perdeuProc:$/;"	l
+return	TRAB.asm	/^    return:$/;"	l
+incX	TRAB.asm	/^incX proc$/;"	l
+ganhouProc	TRAB.asm	/^    ganhouProc:$/;"	l
+perdeuProc	TRAB.asm	/^    perdeuProc:$/;"	l
+return	TRAB.asm	/^    return:$/;"	l
+decX	TRAB.asm	/^decX proc$/;"	l
+ganhouProc	TRAB.asm	/^    ganhouProc:$/;"	l
+perdeuProc	TRAB.asm	/^    perdeuProc:$/;"	l
+return	TRAB.asm	/^    return:$/;"	l
+bonus_string	TRAB.asm	/^bonus_string proc$/;"	l

@@ -14,7 +14,7 @@
 !       \$$       \$$$$$$$$ \$$   \$$ \$$$$$$$  \$$$$$$$$  \$$$$$$  \$$      !
 !                                                                            !
 !                                                                            !
-!                  Voce não chegou ao fim, parabens!                        !
+!                  Voce nao chegou ao fim, parabens!                         !
 !                  Carregue em qualquer tecla para continuar.                !
 !                                                                            !
 !                                                                            !
