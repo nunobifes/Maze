@@ -664,7 +664,7 @@ main		endp
 ; PPPPPPPPPP               RRRRRRRR     RRRRRRR          OOOOOOOOO                  CCCCCCCCCCCCC      SSSSSSSSSSSSSSS
 
 
-display_menuJogar proc
+display_menuJogar proc ; mostra a variavel menuJogar no ecrã
   mov  dx, offset menuJogar
   mov  ah, 9
   int  21h
@@ -688,7 +688,7 @@ display_menuJogar endp
 ;                             $$$$$$/ $$/      $$/ $$//      |$$/       $$$$$$/  $$$$$$/  $$/   $$/
 ;                                                     $$$$$$/
 
-display_fich  proc
+display_fich  proc ; abre o documento txt expecificado
 
 mov     ah,3dh			; vamos abrir ficheiro para leitura
 mov     al,0			; tipo de ficheiro
@@ -749,7 +749,7 @@ display_fich  endp
 ;                       $$$$$$/  $$$$$$$$/ $$$$$$$$/ $$/   $$/ $$/   $$//      |$$$$$$/   $$$$$$/  $$/   $$/ $$$$$$$$/ $$$$$$$$/ $$/   $$/
 ;                                                                       $$$$$$/
 
-    clear_screen proc
+    clear_screen proc ; limpa o ecrã
       mov  ah, 0
       mov  al, 3
       int  10H
@@ -780,98 +780,6 @@ display_fich  endp
     SAI_TECLA:	RET
     LE_TECLA	endp
 
-;                                    ______   _______   ______   ______          __       __   ______   ________  ________
-;                                   /      \ /       \ /      | /      \        /  \     /  | /      \ /        |/        |
-;                                  /$$$$$$  |$$$$$$$  |$$$$$$/ /$$$$$$  |       $$  \   /$$ |/$$$$$$  |$$$$$$$$/ $$$$$$$$/
-;                                  $$ |  $$/ $$ |__$$ |  $$ |  $$ |__$$ |       $$$  \ /$$$ |$$ |__$$ |    /$$/  $$ |__
-;                                  $$ |      $$    $$<   $$ |  $$    $$ |       $$$$  /$$$$ |$$    $$ |   /$$/   $$    |
-;                                  $$ |   __ $$$$$$$  |  $$ |  $$$$$$$$ |       $$ $$ $$/$$ |$$$$$$$$ |  /$$/    $$$$$/
-;                                  $$ \__/  |$$ |  $$ | _$$ |_ $$ |  $$ |       $$ |$$$/ $$ |$$ |  $$ | /$$/____ $$ |_____
-;                                  $$    $$/ $$ |  $$ |/ $$   |$$ |  $$ |______ $$ | $/  $$ |$$ |  $$ |/$$      |$$       |
-;                                   $$$$$$/  $$/   $$/ $$$$$$/ $$/   $$//      |$$/      $$/ $$/   $$/ $$$$$$$$/ $$$$$$$$/
-;                                                                       $$$$$$/
-
-    cria_maze proc
-      call		clear_screen
-
-		  ;Obter a posição
-		  dec		CPOSy		; linha = linha -1
-		  dec		CPOSx		; POSx = POSx -1
-
-      CICLO:
-        goto_xy	CPOSx,CPOSy
-        IMPRIME:
-          mov		ah, 02h
-		      mov		dl, CCar
-		      int		21H
-		      goto_xy	CPOSx,CPOSy
-
-		      call 		LE_TECLA
-		      cmp		ah, 1
-		      je		ESTEND
-		      cmp 		al, 'q'		; ESCAPE
-		      je		FIM
-
-        ZERO:
-          cmp 		al, 48		; Tecla 0
-		      jne		UM
-		      mov		CCar, 32		;ESPA�O
-		      jmp		CICLO
-
-        UM:
-          cmp 		al, 49		; Tecla 1
-		      jne		DOIS
-		      mov		CCar, 219		;Caracter CHEIO
-		      jmp		CICLO
-
-        DOIS:
-          cmp 		al, 50		; Tecla 2
-		      jne		TRES
-		      mov		CCar, 177		;CINZA 177
-		      jmp		CICLO
-
-        TRES:
-          cmp 		al, 51		; Tecla 3
-		      jne		QUATRO
-		      mov		CCar, 178		;CINZA 178
-		      jmp		CICLO
-
-        QUATRO:
-          cmp 		al, 52		; Tecla 4
-		      jne		NOVE
-		      mov		CCar, 176		;CINZA 176
-		      jmp		CICLO
-
-        NOVE:
-          jmp		CICLO
-
-        ESTEND:
-          cmp 		al,48h
-		      jne		BAIXO
-		      dec		CPOSy		;cima
-		      jmp		CICLO
-
-        BAIXO:
-          cmp		al,50h
-		      jne		ESQUERDA
-		      inc 		CPOSy		;Baixo
-		      jmp		CICLO
-
-        ESQUERDA:
-		      cmp		al,4Bh
-		      jne		DIREITA
-		      dec		CPOSx		;Esquerda
-		      jmp		CICLO
-
-        DIREITA:
-		      cmp		al,4Dh
-		      jne		CICLO
-		      inc		CPOSx		;Direita
-		      jmp		CICLO
-
-        fim:
-		      ret
-    cria_maze endp
 
 
 
@@ -883,9 +791,8 @@ display_fich  endp
 
 delay proc
 
-    ;this procedure uses 1A interrupt, more info can be found on
-    ;http://www.computing.dcu.ie/~ray/teaching/CA296/notes/8086_bios_and_dos_interrupts.html
-    mov ah, 00
+
+    mov ah, 00 ; obtem tempo de sistema
     int 1Ah
     mov bx, dx
 
@@ -901,17 +808,17 @@ delay endp
 
 
 
-decY proc
-    mov al, POSy
+decY proc ; Procedimento para mover avatar para cima verificando paredes do labirinto e se chega ao final
+    mov al, POSy ; guarda POSy numa var de test
     mov POSyn, al
-    dec POSyn
+    dec POSyn ; ando com a var de teste
 
-    goto_xy	POSx,POSyn
+    goto_xy	POSx,POSyn ; coloco as POS no novo local
     mov 	ah, 08h
     mov		bh,0		; numero da página
     int		10h
-    mov		Carn, al	; Guarda o Caracter que está na posição do Curso
-      cmp carn, '*'
+    mov		Carn, al	; Guarda o Caracter que está na posição do Curso numa var de teste
+      cmp carn, '*' ; comparo o caracter de teste com as paredes: *, +, -, |. Se for parede salta fora e não mexe o avatar
     je return
     cmp carn, '-'
     je return
@@ -919,22 +826,22 @@ decY proc
     je return
     cmp carn, '+'
     je return
-    cmp   Carn, 'F'
+    cmp   Carn, 'F' ; compara o caracter de teste com o fim do labirinto
     je    ganhouProc
-    mov   al, POSyn ; Reset na posiçao do avatar
+    mov   al, POSyn ; Reset na posiçao do avatar teste
     mov   POSy,al
-    mov   al, POSya
+    mov   al, POSya ; Reset na POS de teste
     mov   POSyn,al
     jmp return
 
-    ganhouProc:
+    ganhouProc:; se ganhou coloca-se a var ganhouVar a 1
     mov al,1
     mov ganhouVar, al
     jmp return
     return:
     ret
 decY endp
-
+; Os procedimentos seguintes são exactamente iguais ao anterior só muda a direcção
 incY proc
     mov al, POSy
     mov POSyn, al
@@ -1033,24 +940,25 @@ decX proc
     ret
 decX endp
 
-bonus_string proc
+
+bonus_string proc ; procedimento para guardar string inserida pelo user na variavel buff
 ; Ler string do teclado
             mov dl,0
             xor si,si
             xor di,di
 
-            mov ah, 0Ah ;SERVICE TO CAPTURE STRING FROM KEYBOARD.
+            mov ah, 0Ah ;interrupção para pedir string ao user
             mov dx, offset buff
             int 21h
             call clear_screen
 ;CHANGE CHR(13) BY '$'.
-            mov si, offset buff + 1 ;NUMBER OF CHARACTERS ENTERED.
-            mov cl, [ si ] ;MOVE LENGTH TO CL.
-            mov ch, 0      ;CLEAR CH TO USE CX.
-            inc cx ;TO REACH CHR(13).
-            add si, cx ;NOW SI POINTS TO CHR(13).
+            mov si, offset buff + 1 ;numero de caracteres introduzidos
+            mov cl, [ si ] ;mover tamanho da string para cl
+            mov ch, 0      ;limpar ch para poder usar cx.
+            inc cx ;incrementar para chegar ao ultimo caracter + 1
+            add si, cx ;Si aponta para o valor do ultimo caracter + 1
             mov al, '$'
-            mov [ si ], al ;REPLACE CHR(13) BY '$'.
+            mov [ si ], al ;altero o ultimo caracter + 1 por '$'
             ret
 bonus_string endp
 
