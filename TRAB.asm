@@ -442,52 +442,85 @@ menu1:
                        jmp CICLOb  ; salta para CICLOb
                      tecA:
                        cmp al, 'a' ; compara al com 'a'
-                       jne tecB    ; se for diferente salta para o proximo caracter
+                       jne maiA
+                       continuA:
                        call incX   ; chama o procedimento de movimento 3x
                        call incX
                        call incX
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
+                       maiA:
+                       cmp al, 'A' ; compara al com 'a'
+                       jne tecB
+                       jmp continuA
+
+
                      tecB:
                        cmp al, 'b' ; compara al com 'b'
-                       jne tecC    ; se for diferente salta para o proximo caracter
+                       jne maiB
+                       continuB:
                        call incX   ; chama o procedimento de movimento 4x
                        call incX
                        call incX
                        call incX
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
+                       maiB:
+                       cmp al, 'B' ; compara al com 'b'
+                       jne tecC    ; se for diferente salta para o proximo caracter
+                       jmp continuB
+
                      tecC:
                        cmp al, 'c' ; compara al com 'c'
-                       jne tecD    ; se for diferente salta para o proximo caracter
+                       jne maiC
+                       continuC:
                        call decX   ; chama o procedimento de movimento 1x
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
+                       maiC:
+                       cmp al, 'C' ; compara al com 'C'
+                       jne tecD    ; se for diferente salta para o proximo caracter
+                       jmp continuC
                      tecD:
                        cmp al, 'd' ; compara al com 'd'
-                       jne tecE    ; se for diferente salta para o proximo caracter
+                       jne maiD
+                       continuD:
                        call decX   ; chama o procedimento de movimento 2x
                        call decX
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
+                       maiD:
+                       cmp al, 'D' ; compara al com 'D'
+                       jne tecE    ; se for diferente salta para o proximo caracter
+                       jmp continuD
                      tecE:
                        cmp al, 'e' ; compara al com 'e'
-                       jne tecF    ; se for diferente salta para o proximo caracter
+                       jne maiE
+                       continuE:
                        call decX   ; chama o procedimento de movimento 3x
                        call decX
                        call decX
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
+                       maiE:
+                       cmp al, 'E' ; compara al com 'E'
+                       jne tecF    ; se for diferente salta para o proximo caracter
+                       jmp continuE
+
                      tecF:
                        cmp al, 'f' ; compara al com 'f'
-                       jne COMP_CHAR ; se for diferente salta para o proximo caracter
+                       jne  maiF
+                       continuF:
                        call decX   ; chama o procedimento de movimento 4x
                        call decX
                        call decX
                        call decX
                        inc si      ; incrementa si
                        jmp CICLOb  ; salta para CICLOb
-
+                       maiF:
+                       cmp al, 'F' ; compara al com 'F'
+                       jne COMP_CHAR ; se for diferente salta para o proximo caracter
+                       jmp continuF
 
                          ganhoub:
 
@@ -761,7 +794,7 @@ display_fich  endp
     cria_maze proc
       call		clear_screen
 
-		  ;Obter a posi��o
+		  ;Obter a posição
 		  dec		CPOSy		; linha = linha -1
 		  dec		CPOSx		; POSx = POSx -1
 
