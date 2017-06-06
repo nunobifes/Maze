@@ -58,14 +58,13 @@ Car		db	32	; Guarda um caracter do Ecran
 Cor		db	7	; Guarda os atributos de cor do caracter
 POSy		db	3	; a linha pode ir de [1 .. 25]
 POSx		db	9	; POSx pode ir [1..80]
-POSya		db	3	; Posi��o anterior de y
-POSxa		db	9	; Posi��o anterior de x
-POSyn   db	3	; Posiçao de teste para fazer verificações
-POSxn		db	9	; Posiçao de teste para fazer verificações
-POSyO   db  3 ; Posiçao original
-POSxO   db  9
-Carn		db	32
-corn    db  7 ; asdadw
+POSya		db	3	; Posição anterior de y
+POSxa		db	9	; Posição anterior de x
+POSyn   db	3	; Posição de teste para fazer verificações
+POSxn		db	9	; Posição de teste para fazer verificações
+POSyO   db  3 ; Posição original y
+POSxO   db  9 ; Posição original x
+Carn		db	32 ; Guarda um caracter de teste para fazer verificações
 
   ; cria maze
 
@@ -74,16 +73,15 @@ corn    db  7 ; asdadw
       CCar    db  32
 
       ; buffer
+      ; buff é onde fica guardado a string com os valores hexadecimais
+      buff        db  51        ; Numero maximo de caracteres permitidos (50)
+                  db  ?         ; Numero de caracteres introduzidos pelo utilizador
+                  db  51 dup(0) ; Caracteres introduzidos pelo utilizador
 
-      buff        db  51        ;MAX NUMBER OF CHARACTERS ALLOWED (50).
-                  db  ?         ;NUMBER OF CHARACTERS ENTERED BY USER.
-                  db  51 dup(0) ;CHARACTERS ENTERED BY USER.
-
-                  ganhouVar db 0
-                  perdeuVar db 0
+                  ganhouVar db 0 ; Variavel para verificar se chegou ao final do labirinto
 
 
-                  delaytime db 5
+                  delaytime db 5 ; Pausa entre movimentos do avatar
 
 
 
@@ -138,17 +136,17 @@ menu1:
 
 
 
-  mov  ah, 07h ;WAIT FOR ANY KEY.
+  mov  ah, 07h ; Espera para que o utilizador insira um caracter
   int  21h
-  cmp  al, '1'
-  je   jogo_menu
-  cmp  al, '2'
-  je   top10
-  cmp  al, '3'
-  je   config
-  cmp  al, '4'
-  je  sair
-  jmp menu1
+  cmp  al, '1' ; Se inserir o numero 1
+  je   jogo_menu ; Vai para o menu dos dois modos de jogo
+  cmp  al, '2' ; Se inserir o numero 2
+  je   top10 ; Vai para a lista do top10
+  cmp  al, '3' ; Se inserir o numero 3
+  je   config ; Vai para o menu de configurar o labirinto
+  cmp  al, '4' ; Se inserir o numero 4
+  je  sair ; Sai do programa
+  jmp menu1 ; Se nao inserir nenhum dos valores volta a pedir
 
 
 ;            JJJJJJJJJJJ        OOOOOOOOO                GGGGGGGGGGGGG        OOOOOOOOO
@@ -172,14 +170,14 @@ menu1:
       call clear_screen
       call display_menuJogar
 
-      mov  ah, 07h ;WAIT FOR ANY KEY.
+      mov  ah, 07h ; Esperar que o utilizador insira um caracter
       int  21h
-      cmp  al, '1'
-      je   jogo
-      cmp  al, '2'
-      je   jogob
-      cmp  al, '3'
-      je   voltar_jogo
+      cmp  al, '1' ; Se inserir 1
+      je   jogo ; Vai para o modo de jogo normal
+      cmp  al, '2' ; Se inserir 2
+      je   jogob ; Vai para o modo de jogo bonus
+      cmp  al, '3' ; Se inserir 3
+      je   voltar_jogo ; Volta para o menu principal
 
 
   jogo:
@@ -188,49 +186,718 @@ menu1:
       call display_fich
 
 
-      goto_xy	POSx,POSy	; Vai para nova possi��o
-  		mov 	ah, 08h	; Guarda o Caracter que est� na posi��o do Cursor
-  		mov		bh,0		; numero da p�gina
+      goto_xy	POSx,POSy	; Vai para nova posição
+  		mov 	ah, 08h	; Guarda o Caracter que está na posição do Cursor
+  		mov		bh, 0		; numero da página
   		int		10h
-  		mov		Car, al	; Guarda o Caracter que est� na posi��o do Cursor
-  		mov		Cor, ah	; Guarda a cor que est� na posi��o do Cursor
+  		mov		Car, al	; Guarda o Caracter que está na posição do Cursor
+  		mov		Cor, ah	; Guarda a cor que está na posição do Cursor
 
 
       CICLO:
-          goto_xy	POSxa,POSya	; Vai para a posi��o anterior do cursor
+          goto_xy	POSxa,POSya	; Vai para a posição anterior do cursor
   		    mov		ah, 02h
   		    mov		dl, Car	; Repoe Caracter guardado
   		    int		21H
 
-  		    goto_xy	POSx,POSy	; Vai para nova possi��o
+  		    goto_xy	POSx,POSy	; Vai para nova possição
   		    mov 	ah, 08h
-  		    mov		bh,0		; numero da p�gina
+  		    mov		bh,0		; numero da página
   		    int		10h
-  		    mov		Car, al 	; Guarda o Caracter que est� na posi��o do Cursor
-  		    mov		Cor, ah	; Guarda a cor que est� na posi��o do Cursor
+  		    mov		Car, al 	; Guarda o Caracter que está na posição do Cursor
+  		    mov		Cor, ah	; Guarda a cor que está na posição do Cursor
 
-  		    goto_xy	77,1		; Mostra o caractr que estava na posi��o do AVATAR
-  		    mov		ah, 02h	; IMPRIME caracter da posi��o no canto
+  		    goto_xy	77,1		; Mostra o caracter que estava na posição do AVATAR
+  		    mov		ah, 02h	; IMPRIME caracter da posição no canto
   		    mov		dl, Car
   		    int		21H
 
-  		    goto_xy	POSx,POSy	; Vai para posi��o do cursor
+  		    goto_xy	POSx,POSy	; Vai para posição do cursor
           IMPRIME:
               mov		ah, 02h
   		        mov		dl, 185	; Coloca AVATAR
   		        int		21H
-  		        goto_xy	POSx,POSy	; Vai para posi��o do cursor
+  		        goto_xy	POSx,POSy	; Vai para posição do cursor
 
-  		        mov		al, POSx	; Guarda a posi��o do cursor
+  		        mov		al, POSx	; Guarda a posição do cursor
   		        mov		POSxa, al
-  		        mov		al, POSy	; Guarda a posi��o do cursor
+  		        mov		al, POSy	; Guarda a posição do cursor
+  		        mov 	POSya, al
+
+          LER_SETA:
+              call 	LE_TECLA ;|------------------------------------------------------------|
+;| TRABALHO PRATICO TECNOLOGIAS E ARQUITETURA DE COMPUTADORES |
+;|                                                            |
+;|                             2016/2017                      |
+;|                                                            |
+;| Nuno Rocha - 21240505                                      |
+;| Vanessa Rodrigues - 21260322                               |
+;|------------------------------------------------------------|
+.8086
+.model	small
+.stack	2048
+
+dseg   	segment para public 'data'
+
+menuJogar db '###############################################################################',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '#             _____  _   _  _____   __   __   ___   ______ _____              #',13,10
+          db '#            (_   _)| | | ||  ___) |  \ /  | / _ \ (___  /|  ___)             #',13,10
+          db '#              | |  | |_| || |_    |   v   || |_| |   / / | |_                #',13,10
+          db '#              | |  |  _  ||  _)   | |\_/| ||  _  |  / /  |  _)               #',13,10
+          db '#              | |  | | | || |___  | |   | || | | | / /__ | |___              #',13,10
+          db '#              |_|  |_| |_||_____) |_|   |_||_| |_|/_____)|_____)             #',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '# Nuno Rocha - 21240505                          Vanessa Rodrigues - 21260322 #',13,10
+          db '###############################################################################',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '#                               1 - Jogar Normal                              #',13,10
+          db '#                               2 - Jogar Bonus                               #',13,10
+          db '#                               3 - Voltar                                    #',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '#                                                                             #',13,10
+          db '###############################################################################',13,10,'$'
+
+
+			    ;Imprimir ficheiro
+			    Erro_Open       db      'Erro ao tentar abrir o ficheiro$'
+			    Erro_Ler_Msg    db      'Erro ao tentar ler do ficheiro$'
+			Erro_Close      db      'Erro ao tentar fechar o ficheiro$'
+			maze         	  db      'fich/maze.txt',0
+      mazeB         	db      'fich/mazeB.txt',0
+      menu1_txt       db      'fich/menu.txt',0
+      menu_conf       db      'fich/menuconf.txt',0
+      ganhou_txt      db      'fich/ganhou.txt',0
+      perdeu_txt      db      'fich/perdeu.txt',0
+      top10_txt       db      'fich/top10.txt',0
+			HandleFich      dw      0
+			car_fich        db      ?
+
+; avatar
+
+Car		db	32	; Guarda um caracter do Ecran
+Cor		db	7	; Guarda os atributos de cor do caracter
+POSy		db	3	; a linha pode ir de [1 .. 25]
+POSx		db	9	; POSx pode ir [1..80]
+POSya		db	3	; Posição anterior de y
+POSxa		db	9	; Posição anterior de x
+POSyn   db	3	; Posição de teste para fazer verificações
+POSxn		db	9	; Posição de teste para fazer verificações
+POSyO   db  3 ; Posição original y
+POSxO   db  9 ; Posição original x
+Carn		db	32 ; Guarda um caracter de teste para fazer verificações
+
+  ; cria maze
+
+      CPOSy   db  5
+      CPOSx   db  10
+      CCar    db  32
+
+      ; buffer
+      ; buff é onde fica guardado a string com os valores hexadecimais
+      buff        db  51        ; Numero maximo de caracteres permitidos (50)
+                  db  ?         ; Numero de caracteres introduzidos pelo utilizador
+                  db  51 dup(0) ; Caracteres introduzidos pelo utilizador
+
+                  ganhouVar db 0 ; Variavel para verificar se chegou ao final do labirinto
+
+
+                  delaytime db 5 ; Pausa entre movimentos do avatar
+
+
+
+dseg    	ends
+
+cseg		segment para public 'code'
+		assume  cs:cseg, ds:dseg
+
+    ;########################################################################
+    goto_xy	macro		POSx,POSy
+        mov		ah,02h
+        mov		bh,0		; numero da pagina
+        mov		dl,POSx
+        mov		dh,POSy
+        int		10h
+    endm
+
+    ;########################################################################
+main		proc
+		mov     ax, dseg
+		mov     ds, ax
+    mov     ax, 0b800h
+    mov     es, ax
+
+
+
+;   MMMMMMMM               MMMMMMMM    EEEEEEEEEEEEEEEEEEEEEE    NNNNNNNN        NNNNNNNN    UUUUUUUU     UUUUUUUU
+;   M:::::::M             M:::::::M    E::::::::::::::::::::E    N:::::::N       N::::::N    U::::::U     U::::::U
+;   M::::::::M           M::::::::M    E::::::::::::::::::::E    N::::::::N      N::::::N    U::::::U     U::::::U
+;   M:::::::::M         M:::::::::M    EE::::::EEEEEEEEE::::E    N:::::::::N     N::::::N    UU:::::U     U:::::UU
+;   M::::::::::M       M::::::::::M      E:::::E       EEEEEE    N::::::::::N    N::::::N     U:::::U     U:::::U
+;   M:::::::::::M     M:::::::::::M      E:::::E                 N:::::::::::N   N::::::N     U:::::D     D:::::U
+;   M:::::::M::::M   M::::M:::::::M      E::::::EEEEEEEEEE       N:::::::N::::N  N::::::N     U:::::D     D:::::U
+;   M::::::M M::::M M::::M M::::::M      E:::::::::::::::E       N::::::N N::::N N::::::N     U:::::D     D:::::U
+;   M::::::M  M::::M::::M  M::::::M      E:::::::::::::::E       N::::::N  N::::N:::::::N     U:::::D     D:::::U
+;   M::::::M   M:::::::M   M::::::M      E::::::EEEEEEEEEE       N::::::N   N:::::::::::N     U:::::D     D:::::U
+;   M::::::M    M:::::M    M::::::M      E:::::E                 N::::::N    N::::::::::N     U:::::D     D:::::U
+;   M::::::M     MMMMM     M::::::M      E:::::E       EEEEEE    N::::::N     N:::::::::N     U::::::U   U::::::U
+;   M::::::M               M::::::M    EE::::::EEEEEEEE:::::E    N::::::N      N::::::::N     U:::::::UUU:::::::U
+;   M::::::M               M::::::M    E::::::::::::::::::::E    N::::::N       N:::::::N      UU:::::::::::::UU
+;   M::::::M               M::::::M    E::::::::::::::::::::E    N::::::N        N::::::N        UU:::::::::UU
+;   MMMMMMMM               MMMMMMMM    EEEEEEEEEEEEEEEEEEEEEE    NNNNNNNN         NNNNNNN          UUUUUUUUU
+
+
+
+
+
+menu1:
+  call clear_screen
+  lea  dx, menu1_txt
+  call display_fich
+
+
+
+  mov  ah, 07h ; Espera para que o utilizador insira um caracter
+  int  21h
+  cmp  al, '1' ; Se inserir o numero 1
+  je   jogo_menu ; Vai para o menu dos dois modos de jogo
+  cmp  al, '2' ; Se inserir o numero 2
+  je   top10 ; Vai para a lista do top10
+  cmp  al, '3' ; Se inserir o numero 3
+  je   config ; Vai para o menu de configurar o labirinto
+  cmp  al, '4' ; Se inserir o numero 4
+  je  sair ; Sai do programa
+  jmp menu1 ; Se nao inserir nenhum dos valores volta a pedir
+
+
+;            JJJJJJJJJJJ        OOOOOOOOO                GGGGGGGGGGGGG        OOOOOOOOO
+;            J:::::::::J      OO:::::::::OO           GGG::::::::::::G      OO:::::::::OO
+;            J:::::::::J    OO:::::::::::::OO       GG:::::::::::::::G    OO:::::::::::::OO
+;            JJ:::::::JJ   O:::::::OOO:::::::O     G:::::GGGGGGGG::::G   O:::::::OOO:::::::O
+;              J:::::J     O::::::O   O::::::O    G:::::G       GGGGGG   O::::::O   O::::::O
+;              J:::::J     O:::::O     O:::::O   G:::::G                 O:::::O     O:::::O
+;              J:::::J     O:::::O     O:::::O   G:::::G                 O:::::O     O:::::O
+;              J:::::j     O:::::O     O:::::O   G:::::G    GGGGGGGGGG   O:::::O     O:::::O
+;              J:::::J     O:::::O     O:::::O   G:::::G    G::::::::G   O:::::O     O:::::O
+;  JJJJJJJ     J:::::J     O:::::O     O:::::O   G:::::G    GGGGG::::G   O:::::O     O:::::O
+;  J:::::J     J:::::J     O:::::O     O:::::O   G:::::G        G::::G   O:::::O     O:::::O
+;  J::::::J   J::::::J     O::::::O   O::::::O    G:::::G       G::::G   O::::::O   O::::::O
+;  J:::::::JJJ:::::::J     O:::::::OOO:::::::O     G:::::GGGGGGGG::::G   O:::::::OOO:::::::O
+;   JJ:::::::::::::JJ       OO:::::::::::::OO       GG:::::::::::::::G    OO:::::::::::::OO
+;     JJ:::::::::JJ           OO:::::::::OO           GGG::::::GGG:::G      OO:::::::::OO
+;       JJJJJJJJJ               OOOOOOOOO                GGGGGG   GGGG        OOOOOOOOO
+
+  jogo_menu:
+      call clear_screen
+      call display_menuJogar
+
+      mov  ah, 07h ; Esperar que o utilizador insira um caracter
+      int  21h
+      cmp  al, '1' ; Se inserir 1
+      je   jogo ; Vai para o modo de jogo normal
+      cmp  al, '2' ; Se inserir 2
+      je   jogob ; Vai para o modo de jogo bonus
+      cmp  al, '3' ; Se inserir 3
+      je   voltar_jogo ; Volta para o menu principal
+
+
+  jogo:
+      call clear_screen
+      lea  dx, maze
+      call display_fich
+
+
+      goto_xy	POSx,POSy	; Vai para nova posição
+  		mov 	ah, 08h	; Guarda o Caracter que está na posição do Cursor
+  		mov		bh, 0		; numero da página
+  		int		10h
+  		mov		Car, al	; Guarda o Caracter que está na posição do Cursor
+  		mov		Cor, ah	; Guarda a cor que está na posição do Cursor
+
+
+      CICLO:
+          goto_xy	POSxa,POSya	; Vai para a posição anterior do cursor
+  		    mov		ah, 02h
+  		    mov		dl, Car	; Repoe Caracter guardado
+  		    int		21H
+
+  		    goto_xy	POSx,POSy	; Vai para nova possição
+  		    mov 	ah, 08h
+  		    mov		bh,0		; numero da página
+  		    int		10h
+  		    mov		Car, al 	; Guarda o Caracter que está na posição do Cursor
+  		    mov		Cor, ah	; Guarda a cor que está na posição do Cursor
+
+  		    goto_xy	77,1		; Mostra o caracter que estava na posição do AVATAR
+  		    mov		ah, 02h	; Imprime caracter da posição no canto
+  		    mov		dl, Car
+  		    int		21H
+
+  		    goto_xy	POSx,POSy	; Vai para posição do cursor
+
+          IMPRIME:
+              mov		ah, 02h
+  		        mov		dl, 185	; Coloca AVATAR
+  		        int		21H
+  		        goto_xy	POSx,POSy	; Vai para posição do cursor
+
+  		        mov		al, POSx	; Guarda a posição do cursor
+  		        mov		POSxa, al
+  		        mov		al, POSy	; Guarda a posição do cursor
   		        mov 	POSya, al
 
           LER_SETA:
               call 	LE_TECLA
+  		        cmp		ah, 1 ; Se inserir tecla
+  		        je		CIMA ; Vai para função
+  		        cmp 	al, 'q'	; SAIR
+  		        je		voltar_jogo ; Se sair vai para menu principal
+  		        jmp		LER_SETA
+
+          CIMA:
+              cmp 	al,48h ; Compara com a seta para cima
+  		        jne		BAIXO ; Se não for, salta para a função BAIXO
+              call  decY
+              cmp   ganhouVar,1 ; Vê se chegou ao final do labirinto
+              je    ganhou ; Se chegou ao final mostra que ganhou
+              jmp		CICLO
+
+          BAIXO:
+              cmp		al,50h
+  		        jne		ESQUERDA
+              call   incY
+              cmp   ganhouVar,1
+              je    ganhou
+              jmp		CICLO
+
+          ESQUERDA:
+  		        cmp		al,4bh
+  		        jne		DIREITA
+              call   decX
+              cmp   ganhouVar,1
+              je    ganhou
+              jmp		CICLO
+
+          DIREITA:
+  		        cmp		al,4dh
+  		        jne		LER_SETA
+              call   incX
+              cmp   ganhouVar,1
+              je    ganhou
+              jmp		CICLO
+
+
+          ganhou:
+              call clear_screen
+              lea dx, ganhou_txt
+              call display_fich
+              mov  al, POSyO ; reset da posição do cursor
+              mov  POSy, al
+              mov  al, POSxO
+              mov  POSx, al
+
+              goto_xy	POSx,POSy	; Vai para nova posição
+
+              mov  ah, 07h ; Esperar tecla.
+              int  21h
+              jmp  voltar_jogo
+
+          voltar_jogo:
+              jmp  menu1
+
+
+
+
+ ;            JJJJJJJJJJJ     OOOOOOOOO             GGGGGGGGGGGGG     OOOOOOOOO          BBBBBBBBBBBBBBBBB
+ ;            J:::::::::J   OO:::::::::OO        GGG::::::::::::G   OO:::::::::OO        B::::::::::::::::B
+ ;            J:::::::::J OO:::::::::::::OO    GG:::::::::::::::G OO:::::::::::::OO      B::::::BBBBBB:::::B
+ ;            JJ:::::::JJO:::::::OOO:::::::O  G:::::GGGGGGGG::::GO:::::::OOO:::::::O     BB:::::B     B:::::B
+ ;              J:::::J  O::::::O   O::::::O G:::::G       GGGGGGO::::::O   O::::::O       B::::B     B:::::B
+ ;              J:::::J  O:::::O     O:::::OG:::::G              O:::::O     O:::::O       B::::B     B:::::B
+ ;              J:::::J  O:::::O     O:::::OG:::::G              O:::::O     O:::::O       B::::BBBBBB:::::B
+ ;              J:::::j  O:::::O     O:::::OG:::::G    GGGGGGGGGGO:::::O     O:::::O       B:::::::::::::BB
+ ;              J:::::J  O:::::O     O:::::OG:::::G    G::::::::GO:::::O     O:::::O       B::::BBBBBB:::::B
+ ;  JJJJJJJ     J:::::J  O:::::O     O:::::OG:::::G    GGGGG::::GO:::::O     O:::::O       B::::B     B:::::B
+ ;  J:::::J     J:::::J  O:::::O     O:::::OG:::::G        G::::GO:::::O     O:::::O       B::::B     B:::::B
+ ;  J::::::J   J::::::J  O::::::O   O::::::O G:::::G       G::::GO::::::O   O::::::O       B::::B     B:::::B
+ ;  J:::::::JJJ:::::::J  O:::::::OOO:::::::O  G:::::GGGGGGGG::::GO:::::::OOO:::::::O     BB:::::BBBBBB::::::B
+ ;   JJ:::::::::::::JJ    OO:::::::::::::OO    GG:::::::::::::::G OO:::::::::::::OO      B:::::::::::::::::B
+ ;     JJ:::::::::JJ        OO:::::::::OO        GGG::::::GGG:::G   OO:::::::::OO        B::::::::::::::::B
+ ;       JJJJJJJJJ            OOOOOOOOO             GGGGGG   GGGG     OOOOOOOOO          BBBBBBBBBBBBBBBBB
+
+             jogob:
+             call clear_screen
+             lea  dx, mazeB
+             call display_fich
+             mov delaytime, 5 ; ; Pausa entre movimentos do avatar
+             call bonus_string
+             mov si, 2
+             goto_xy	POSx,POSy	; Vai para nova posição
+             mov 	ah, 08h	; Guarda o caracter que está na posição do Cursor
+             mov		bh,0		; Numero da página
+             int		10h
+             mov		Car, al	; Guarda o caracter que está na posição do Cursor
+             mov		Cor, ah	; Guarda a cor que está na posição do Cursor
+
+
+             CICLOb:
+             call clear_screen
+             lea  dx, mazeB
+             call display_fich
+
+                 goto_xy	POSxa,POSya	; Vai para a posição anterior do cursor
+                 mov		ah, 02h
+                 mov		dl, Car	; Repoe Caracter guardado
+                 int		21H
+
+                 goto_xy	POSx,POSy	; Vai para nova possição
+                 mov 	ah, 08h
+                 mov		bh,0		; Numero da página
+                 int		10htr
+                 mov		Car, al 	; Guarda o caracter que está na posição do cursor
+                 mov		Cor, ah	; Guarda a cor que está na posição do Cursor
+
+                 goto_xy	77,1		; Mostra o caracter que estava na posição do AVATAR
+                 mov		ah, 02h	; Imprime caracter da posição no canto
+                 mov		dl, Car
+                 int		21H
+
+                 goto_xy	POSx,POSy	; Vai para posição do cursor
+
+          IMPRIMEb:
+          mov		ah, 02h
+          mov		dl, 185	; Coloca AVATAR
+          int		21H
+
+                 goto_xy	POSx,POSy	; Vai para posição do cursor
+                 mov		al, POSx	; Guarda a posição do cursor
+                 mov		POSxa, al
+                 mov		al, POSy	; Guarda a posição do cursor
+                 mov 	POSya, al
+
+
+                 COMP_CHAR:
+                     call delay
+                     mov al,buff[si]
+                     cmp   ganhouVar, 1
+                     je    ganhoub
+                     cmp al, '$'
+                     jne tec0
+                     cmp al, '$'
+                     je perdeu
+                     jmp CICLOb
+
+                     tec0:
+                       cmp al, '0'
+                       jne tec1
+                       call decY
+                       inc si
+                       jmp CICLOb
+
+                     tec1:
+                       cmp al, '1'
+                       jne tec2
+                       call decY
+                       call decY
+                       inc si
+                       jmp CICLOb
+
+                     tec2:
+                       cmp al, '2'
+                       jne tec3
+                       call decY
+                       call decY
+                       call decY
+                       inc si
+                       jmp CICLOb
+                     tec3:
+                       cmp al, '3'
+                       jne tec4
+                       call decY
+                       call decY
+                       call decY
+                       call decY
+                       inc si
+                       jmp CICLOb
+                     tec4:
+                       cmp al, '4'
+                     jne tec5
+                     call incY
+                     inc si
+                     jmp CICLOb
+                     tec5:
+                     cmp al, '5'
+                     jne tec6
+                     call incY
+                     call incY
+                     inc si
+                     jmp CICLOb
+                     tec6:
+                     cmp al, '6'
+                     jne tec7
+                     call incY
+                     call incY
+                     call incY
+                     inc si
+                     jmp CICLOb
+                     tec7:
+                     cmp al, '7'
+                     jne tec8
+                     call incY
+                     call incY
+                     call incY
+                     call incY
+                     je    perdeu
+                     inc si
+                     jmp CICLOb
+                     tec8:
+                     cmp al, '8'
+                     jne tec9
+                     call incX
+                     inc si
+                     jmp CICLOb
+                     tec9:
+                     cmp al, '9'
+                     jne tecA
+                     call incX
+                     call incX
+
+                     inc si
+                     jmp CICLOb
+                     tecA:
+                     cmp al, 'a'
+                     jne tecB
+                     call incX
+                     call incX
+                     call incX
+                     inc si
+                     jmp CICLOb
+                     tecB:
+                     cmp al, 'b'
+                     jne tecC
+                     call incX
+                     call incX
+                     call incX
+                     call incX
+                     inc si
+                     jmp CICLOb
+                     tecC:
+                     cmp al, 'c'
+                     jne tecD
+                     call decX
+                     inc si
+                     jmp CICLOb
+                     tecD:
+                     cmp al, 'd'
+                     jne tecE
+                     call decX
+                     call decX
+                     inc si
+                     jmp CICLOb
+                     tecE:
+                     cmp al, 'e'
+                     jne tecF
+                     call decX
+                     call decX
+                     call decX
+                     inc si
+                     jmp CICLOb
+                     tecF:
+                     cmp al, 'f'
+                     jne COMP_CHAR
+                     call decX
+                     call decX
+                     call decX
+                     call decX
+                     inc si
+                     jmp CICLOb
+
+
+                         ganhoub:
+                             mov ax, 0003H
+                             int 10H
+                             mov delaytime, 100
+                             mov dx, 0000H
+                             call clear_screen
+                             lea dx, ganhou_txt
+                             call display_fich
+                             mov  al, POSyO
+                             mov  POSy, al
+                             mov  al, POSxO
+                             mov  POSx, al
+                             mov ganhouVar, 0
+                             goto_xy	POSx,POSy	; Vai para nova possi��o
+
+                             mov  ah, 07h ;WAIT FOR ANY KEY.
+                             int  21h
+                             jmp saib
+
+
+                             perdeu:
+
+                             mov ax, 0003H
+                             int 10H
+                             mov delaytime, 100
+                             mov dx, 0000H
+                             call clear_screen
+                             lea dx, perdeu_txt
+                             call display_fich
+                             mov  al, POSyO
+                             mov  POSy, al
+                             mov  al, POSxO
+                             mov  POSx, al
+                             goto_xy	POSx,POSy	; Vai para nova possi��o
+
+                             mov  ah, 07h ;WAIT FOR ANY KEY.
+                             int  21h
+                             jmp saib
+
+                             saib:
+                             jmp jogo_menu
+
+
+;  TTTTTTTTTTTTTTTTTTTTTTT        OOOOOOOOO        PPPPPPPPPPPPPPPPP             1111111           000000000
+;  T:::::::::::::::::::::T      OO:::::::::OO      P::::::::::::::::P           1::::::1         00:::::::::00
+;  T:::::::::::::::::::::T    OO:::::::::::::OO    P::::::PPPPPP:::::P         1:::::::1       00:::::::::::::00
+;  T:::::TT:::::::TT:::::T   O:::::::OOO:::::::O   PP:::::P     P:::::P        111:::::1      0:::::::000:::::::0
+;  TTTTTT  T:::::T  TTTTTT   O::::::O   O::::::O     P::::P     P:::::P           1::::1      0::::::0   0::::::0
+;          T:::::T           O:::::O     O:::::O     P::::P     P:::::P           1::::1      0:::::0     0:::::0
+;          T:::::T           O:::::O     O:::::O     P::::PPPPPP:::::P            1::::1      0:::::0     0:::::0
+;          T:::::T           O:::::O     O:::::O     P:::::::::::::PP             1::::l      0:::::0 000 0:::::0
+;          T:::::T           O:::::O     O:::::O     P::::PPPPPPPPP               1::::l      0:::::0 000 0:::::0
+;          T:::::T           O:::::O     O:::::O     P::::P                       1::::l      0:::::0     0:::::0
+;          T:::::T           O:::::O     O:::::O     P::::P                       1::::l      0:::::0     0:::::0
+;          T:::::T           O::::::O   O::::::O     P::::P                       1::::l      0::::::0   0::::::0
+;        TT:::::::TT         O:::::::OOO:::::::O   PP::::::PP                  111::::::111   0:::::::000:::::::0
+;        T:::::::::T          OO:::::::::::::OO    P::::::::P                  1::::::::::1    00:::::::::::::00
+;        T:::::::::T            OO:::::::::OO      P::::::::P                  1::::::::::1      00:::::::::00
+;        TTTTTTTTTTT              OOOOOOOOO        PPPPPPPPPP                  111111111111        000000000
+
+    top10:
+      call clear_screen
+      lea  dx, top10_txt
+      call display_fich
+      mov  ah, 07h ;WAIT FOR ANY KEY.
+      int  21h
+      jmp  menu1
+
+
+;           CCCCCCCCCCCCC        OOOOOOOOO        NNNNNNNN        NNNNNNNN   FFFFFFFFFFFFFFFFFFFFFF   IIIIIIIIII         GGGGGGGGGGGGG
+;        CCC::::::::::::C      OO:::::::::OO      N:::::::N       N::::::N   F::::::::::::::::::::F   I::::::::I      GGG::::::::::::G
+;      CC:::::::::::::::C    OO:::::::::::::OO    N::::::::N      N::::::N   F::::::::::::::::::::F   I::::::::I    GG:::::::::::::::G
+;     C:::::CCCCCCCC::::C   O:::::::OOO:::::::O   N:::::::::N     N::::::N   FF::::::FFFFFFFFF::::F   II::::::II   G:::::GGGGGGGG::::G
+;    C:::::C       CCCCCC   O::::::O   O::::::O   N::::::::::N    N::::::N     F:::::F       FFFFFF     I::::I    G:::::G       GGGGGG
+;   C:::::C                 O:::::O     O:::::O   N:::::::::::N   N::::::N     F:::::F                  I::::I   G:::::G
+;   C:::::C                 O:::::O     O:::::O   N:::::::N::::N  N::::::N     F::::::FFFFFFFFFF        I::::I   G:::::G
+;   C:::::C                 O:::::O     O:::::O   N::::::N N::::N N::::::N     F:::::::::::::::F        I::::I   G:::::G    GGGGGGGGGG
+;   C:::::C                 O:::::O     O:::::O   N::::::N  N::::N:::::::N     F:::::::::::::::F        I::::I   G:::::G    G::::::::G
+;   C:::::C                 O:::::O     O:::::O   N::::::N   N:::::::::::N     F::::::FFFFFFFFFF        I::::I   G:::::G    GGGGG::::G
+;   C:::::C                 O:::::O     O:::::O   N::::::N    N::::::::::N     F:::::F                  I::::I   G:::::G        G::::G
+;    C:::::C       CCCCCC   O::::::O   O::::::O   N::::::N     N:::::::::N     F:::::F                  I::::I    G:::::G       G::::G
+;     C:::::CCCCCCCC::::C   O:::::::OOO:::::::O   N::::::N      N::::::::N   FF:::::::FF              II::::::II   G:::::GGGGGGGG::::G
+;      CC:::::::::::::::C    OO:::::::::::::OO    N::::::N       N:::::::N   F::::::::FF              I::::::::I    GG:::::::::::::::G
+;        CCC::::::::::::C      OO:::::::::OO      N::::::N        N::::::N   F::::::::FF              I::::::::I      GGG::::::GGG:::G
+;           CCCCCCCCCCCCC        OOOOOOOOO        NNNNNNNN         NNNNNNN   FFFFFFFFFFF              IIIIIIIIII         GGGGGG   GGGG
+  config:
+      call clear_screen
+      lea  dx, menu_conf
+      call display_fich
+
+      xor ax, ax
+      mov  ah, 1
+      int  21h
+      cmp  al, '1'
+      je   labiBase
+      cmp  al, '2'
+      je   carreLabi
+      cmp  al, '3'
+      je   criaLabi
+      cmp  al, '4'
+      je   ediLabi
+      cmp al, '5'
+      je  voltar
+      jmp config
+
+      labiBase:
+      jmp Config
+      carreLabi:
+      jmp Config
+      criaLabi:
+      call cria_maze
+      jmp config
+      ediLabi:
+      jmp Config
+      voltar:
+          jmp  menu1
+
+
+
+  sair:
+      ;FINISH PROGRAM.
+      mov  ax, 4c00h
+      int  21h
+
+main		endp
+
+
+
+; PPPPPPPPPPPPPPPPP        RRRRRRRRRRRRRRRRR             OOOOOOOOO                  CCCCCCCCCCCCC        SSSSSSSSSSSSSSS
+; P::::::::::::::::P       R::::::::::::::::R          OO:::::::::OO             CCC::::::::::::C      SS:::::::::::::::S
+; P::::::PPPPPP:::::P      R::::::RRRRRR:::::R       OO:::::::::::::OO         CC:::::::::::::::C     S:::::SSSSSS::::::S
+; PP:::::P     P:::::P     RR:::::R     R:::::R     O:::::::OOO:::::::O       C:::::CCCCCCCC::::C     S:::::S     SSSSSSS
+;   P::::P     P:::::P       R::::R     R:::::R     O::::::O   O::::::O      C:::::C       CCCCCC     S:::::S
+;   P::::P     P:::::P       R::::R     R:::::R     O:::::O     O:::::O     C:::::C                   S:::::S
+;   P::::PPPPPP:::::P        R::::RRRRRR:::::R      O:::::O     O:::::O     C:::::C                    S::::SSSS
+;   P:::::::::::::PP         R:::::::::::::RR       O:::::O     O:::::O     C:::::C                     SS::::::SSSSS
+;   P::::PPPPPPPPP           R::::RRRRRR:::::R      O:::::O     O:::::O     C:::::C                       SSS::::::::SS
+;   P::::P                   R::::R     R:::::R     O:::::O     O:::::O     C:::::C                          SSSSSS::::S
+;   P::::P                   R::::R     R:::::R     O:::::O     O:::::O     C:::::C                               S:::::S
+;   P::::P                   R::::R     R:::::R     O::::::O   O::::::O      C:::::C       CCCCCC                 S:::::S
+; PP::::::PP               RR:::::R     R:::::R     O:::::::OOO:::::::O       C:::::CCCCCCCC::::C     SSSSSSS     S:::::S
+; P::::::::P               R::::::R     R:::::R      OO:::::::::::::OO         CC:::::::::::::::C     S::::::SSSSSS:::::S
+; P::::::::P               R::::::R     R:::::R        OO:::::::::OO             CCC::::::::::::C     S:::::::::::::::SS
+; PPPPPPPPPP               RRRRRRRR     RRRRRRR          OOOOOOOOO                  CCCCCCCCCCCCC      SSSSSSSSSSSSSSS
+
+
+display_menuJogar proc
+  mov  dx, offset menuJogar
+  mov  ah, 9
+  int  21h
+  ret
+display_menuJogar endp
+
+
+
+
+
+
+
+;                              ______  __       __  _______    ________  ______   ______   __    __
+;                             /      |/  \     /  |/       \  /        |/      | /      \ /  |  /  |
+;                             $$$$$$/ $$  \   /$$ |$$$$$$$  | $$$$$$$$/ $$$$$$/ /$$$$$$  |$$ |  $$ |
+;                               $$ |  $$$  \ /$$$ |$$ |__$$ | $$ |__      $$ |  $$ |  $$/ $$ |__$$ |
+;                               $$ |  $$$$  /$$$$ |$$    $$/  $$    |     $$ |  $$ |      $$    $$ |
+;                               $$ |  $$ $$ $$/$$ |$$$$$$$/   $$$$$/      $$ |  $$ |   __ $$$$$$$$ |
+;                              _$$ |_ $$ |$$$/ $$ |$$ |       $$ |       _$$ |_ $$ \__/  |$$ |  $$ |
+;                             / $$   |$$ | $/  $$ |$$ |______ $$ |      / $$   |$$    $$/ $$ |  $$ |
+;                             $$$$$$/ $$/      $$/ $$//      |$$/       $$$$$$/  $$$$$$/  $$/   $$/
+;                                                     $$$$$$/
+
+display_fich  proc
+
+mov     ah,3dh			; vamos abrir ficheiro para leitura
+mov     al,0			; tipo de ficheiro
+int     21h			; abre para leitura
+jc      erro_abrir		; pode aconter erro a abrir o ficheiro
   		        cmp		ah, 1
   		        je		CIMA
-  		        cmp 	al, 'q'	; ESCAPE
+  		        cmp 	al, 'q'	; SAIR
   		        je		voltar_jogo
   		        jmp		LER_SETA
 
@@ -271,16 +938,17 @@ menu1:
               call clear_screen
               lea dx, ganhou_txt
               call display_fich
-              mov  al, POSyO
+              mov  al, POSyO ; reset da posição do cursor
               mov  POSy, al
               mov  al, POSxO
               mov  POSx, al
 
-              goto_xy	POSx,POSy	; Vai para nova possi��o
+              goto_xy	POSx,POSy	; Vai para nova posição
 
-              mov  ah, 07h ;WAIT FOR ANY KEY.
+              mov  ah, 07h ; Esperar tecla.
               int  21h
               jmp  voltar_jogo
+
           voltar_jogo:
               jmp  menu1
 
@@ -305,58 +973,57 @@ menu1:
  ;       JJJJJJJJJ            OOOOOOOOO             GGGGGG   GGGG     OOOOOOOOO          BBBBBBBBBBBBBBBBB
 
              jogob:
-
              call clear_screen
              lea  dx, mazeB
              call display_fich
-             mov delaytime, 5
+             mov delaytime, 5 ; ; Pausa entre movimentos do avatar
              call bonus_string
              mov si, 2
-             goto_xy	POSx,POSy	; Vai para nova possi��o
-             mov 	ah, 08h	; Guarda o Caracter que est� na posi��o do Cursor
-             mov		bh,0		; numero da p�gina
+             goto_xy	POSx,POSy	; Vai para nova posição
+             mov 	ah, 08h	; Guarda o caracter que está na posição do Cursor
+             mov		bh,0		; Numero da página
              int		10h
-             mov		Car, al	; Guarda o Caracter que est� na posi��o do Cursor
-             mov		Cor, ah	; Guarda a cor que est� na posi��o do Cursor
+             mov		Car, al	; Guarda o caracter que está na posição do Cursor
+             mov		Cor, ah	; Guarda a cor que está na posição do Cursor
 
 
              CICLOb:
-
              call clear_screen
              lea  dx, mazeB
              call display_fich
-                 goto_xy	POSxa,POSya	; Vai para a posi��o anterior do cursor
+
+                 goto_xy	POSxa,POSya	; Vai para a posição anterior do cursor
                  mov		ah, 02h
                  mov		dl, Car	; Repoe Caracter guardado
                  int		21H
 
-                 goto_xy	POSx,POSy	; Vai para nova possi��o
+                 goto_xy	POSx,POSy	; Vai para nova possição
                  mov 	ah, 08h
-                 mov		bh,0		; numero da p�gina
+                 mov		bh,0		; Numero da página
                  int		10htr
-                 mov		Car, al 	; Guarda o Caracter que est� na posi��o do Cursor
-                 mov		Cor, ah	; Guarda a cor que est� na posi��o do Cursor
+                 mov		Car, al 	; Guarda o caracter que está na posição do cursor
+                 mov		Cor, ah	; Guarda a cor que está na posição do Cursor
 
-                 goto_xy	77,1		; Mostra o caractr que estava na posi��o do AVATAR
-                 mov		ah, 02h	; IMPRIME caracter da posi��o no canto
+                 goto_xy	77,1		; Mostra o caracter que estava na posição do AVATAR
+                 mov		ah, 02h	; Imprime caracter da posição no canto
                  mov		dl, Car
                  int		21H
 
-                 goto_xy	POSx,POSy	; Vai para posi��o do cursor
-                 IMPRIMEb:
-                     mov		ah, 02h
-                     mov		dl, 185	; Coloca AVATAR
-                     int		21H
-                     goto_xy	POSx,POSy	; Vai para posi��o do cursor
+                 goto_xy	POSx,POSy	; Vai para posição do cursor
 
-                     mov		al, POSx	; Guarda a posi��o do cursor
-                     mov		POSxa, al
-                     mov		al, POSy	; Guarda a posi��o do cursor
-                     mov 	POSya, al
+          IMPRIMEb:
+          mov		ah, 02h
+          mov		dl, 185	; Coloca AVATAR
+          int		21H
+
+                 goto_xy	POSx,POSy	; Vai para posição do cursor
+                 mov		al, POSx	; Guarda a posição do cursor
+                 mov		POSxa, al
+                 mov		al, POSy	; Guarda a posição do cursor
+                 mov 	POSya, al
 
 
                  COMP_CHAR:
-
                      call delay
                      mov al,buff[si]
                      cmp   ganhouVar, 1
@@ -373,6 +1040,7 @@ menu1:
                        call decY
                        inc si
                        jmp CICLOb
+
                      tec1:
                        cmp al, '1'
                        jne tec2
@@ -380,6 +1048,7 @@ menu1:
                        call decY
                        inc si
                        jmp CICLOb
+
                      tec2:
                        cmp al, '2'
                        jne tec3
@@ -878,11 +1547,12 @@ decY proc
     mov al, POSy
     mov POSyn, al
     dec POSyn
+
     goto_xy	POSx,POSyn
     mov 	ah, 08h
-    mov		bh,0		; numero da p�gina
+    mov		bh,0		; numero da página
     int		10h
-    mov		Carn, al	; Guarda o Caracter que est� na posi��o do Curso
+    mov		Carn, al	; Guarda o Caracter que está na posição do Curso
       cmp carn, '*'
     je return
     cmp carn, '-'
@@ -893,11 +1563,12 @@ decY proc
     je return
     cmp   Carn, 'F'
     je    ganhouProc
-    mov   al, POSyn
+    mov   al, POSyn ; Reset na posiçao do avatar
     mov   POSy,al
     mov   al, POSya
     mov   POSyn,al
     jmp return
+
     ganhouProc:
     mov al,1
     mov ganhouVar, al
